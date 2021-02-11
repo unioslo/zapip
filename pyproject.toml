@@ -1,0 +1,41 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool]
+[tool.poetry]
+name = "zapip"
+version = "0.1.0"
+description = "Zoom-API-proxy"
+
+repository = "https://bitbucket.usit.uio.no/projects/INT/repos/zapip/browse"
+homepage = "https://www.usit.uio.no/"
+
+authors = [
+    "USIT, University of Oslo <bnt-int@usit.uio.no>"
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+django = "*"
+django-extensions = "*"
+psycopg2-binary = "*"
+sentry-sdk = "*"
+whitenoise = "*"
+
+[tool.poetry.dev-dependencies]
+black = "*"
+django-stubs = "*"
+ipython = "*"
+mypy = "*"
+pylint = "*"
+pylint-django = "*"
+rope = "*"
+autopep8 = "*"
+
+[tool.poetry.extras]
+lint = ["black"]
+
+[tool.poetry-dynamic-versioning]
+enable = true
+format = "{base}+{commit}-{dirty}"
