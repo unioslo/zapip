@@ -25,6 +25,7 @@ whitenoise = "*"
 
 [tool.poetry.dev-dependencies]
 black = "*"
+coverage = "*"
 django-stubs = "*"
 ipython = "*"
 mypy = "*"
