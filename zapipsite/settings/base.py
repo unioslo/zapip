@@ -6,7 +6,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 import os
-from typing import List, Tuple
+from typing import List, Tuple, Optional, Dict
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -171,3 +171,12 @@ LOGGING = {
         "pika": {"handlers": ["console"], "level": "ERROR"},
     },
 }
+
+
+# Zapip
+
+# For certain views, we want to validate that the request is coming from
+# a proxy or API gateway. All headers (keys) must contain the configured
+# value for the request to be let through.
+# Setting this to None disables header authentication.
+HEADER_AUTH: Optional[Dict[str, str]] = None
