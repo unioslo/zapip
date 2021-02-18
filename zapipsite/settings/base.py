@@ -128,7 +128,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # STATICFILES_DIRS = [os.path.join(BASE_DIR, "..", "zapip", "frontend", "dist")]
 
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
@@ -180,3 +180,16 @@ LOGGING = {
 # value for the request to be let through.
 # Setting this to None disables header authentication.
 HEADER_AUTH: Optional[Dict[str, str]] = None
+
+# We expect the API gateway to add these headers to any forwarded requests.
+# "API ID" identifies the API known to the gateway.
+# "Application ID" identifies the application known to the gateway.
+# "Subscription ID" identifies an instance of an application being granted
+# access to an API. Any API keys are associated with a subscription.
+GATEWAY_API_ID_HEADER = "X-Api"
+GATEWAY_APPLICATION_ID_HEADER = "X-Api-Application"
+GATEWAY_SUBSCRIPTION_ID_HEADER = "X-Api-Subscription"
+
+# Zoom client
+ZOOM_API_BASE_URL = "https://zoom.example.com/"
+ZOOM_API_HEADERS = {"X-Gravitee-Api-Key": "foo"}

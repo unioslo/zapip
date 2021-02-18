@@ -3,5 +3,5 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class ZapipAppConfig(AppConfig):
-    name = 'zapip'
-    verbose_name = _('Zapip')
+    name = "zapip"
+    verbose_name = _("Zapip")
