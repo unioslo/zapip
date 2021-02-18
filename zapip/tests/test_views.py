@@ -3,16 +3,15 @@ from typing import Any
 from urllib.parse import urljoin
 
 import requests_mock
+from django.conf import settings
 from django.http import HttpResponse
 from django.http.request import HttpRequest
 from django.test import Client, TestCase
+from django.test.utils import override_settings
 from zapip.models import ZoomMeeting
 
 
-def zoom_url(path):
-    return urljoin("https://zoom.example.com/", path)
-
-
+@override_settings(ZOOM_API_BASE_URL="https://zoom.example.com/")
 class ZapipTestCase(TestCase):
     def setUp(self):
         self.client = Client()
@@ -29,10 +28,14 @@ class ZapipTestCase(TestCase):
             "HTTP_X_API_SUBSCRIPTION": self.subscription_id,
         }
 
+    def zoom_url(self, path):
+        return urljoin(settings.ZOOM_API_BASE_URL, path)
+
     def _create_meeting(self, mock: Any) -> HttpResponse:
-        endpoint = zoom_url("/users/{}/meetings".format(self.user_id))
+        endpoint = self.zoom_url("/v2/users/{}/meetings".format(self.user_id))
         mock.post(
             endpoint,
+            status_code=201,
             json={"id": self.meeting_id, "topic": "Test"},
             headers={
                 "content-type": "application/json",
@@ -102,7 +105,7 @@ class ReadUpdateDeleteMeetingTestCase(ZapipTestCase):
         self, mock: Any
     ):
         self._create_meeting(mock)
-        endpoint = zoom_url("/meetings/{}".format(self.meeting_id))
+        endpoint = self.zoom_url("/v2/meetings/{}".format(self.meeting_id))
         mock.get(
             endpoint,
             json={"id": self.meeting_id, "topic": "Interesting stuff"},

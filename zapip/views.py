@@ -1,18 +1,13 @@
 import logging
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Tuple
 
-from django.conf import settings
-from django.http import HttpResponse
 from django.http.request import HttpRequest
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 from requests.models import Response
 
-from zapip.auth import (
-    gateway_headers_required,
-    get_gateway_headers,
-    header_auth_required,
-)
+from zapip.auth import gateway_headers_required, header_auth_required
 from zapip.models import Application, ZoomMeeting
 from zapip.utils import ZapipResponseForbidden, ZoomResponse
 from zapip.zoom import get_zoom_client
@@ -21,8 +16,7 @@ logger = logging.getLogger(__name__)
 
 auth_decorators = [header_auth_required, gateway_headers_required]
 
-
-EXCLUDED_HEADERS = {
+EXCLUDED_RESPONSE_HEADERS = {
     "connection",
     "keep-alive",
     "proxy-authenticate",
@@ -36,6 +30,13 @@ EXCLUDED_HEADERS = {
 }
 
 
+def make_proxy_request(request: HttpRequest) -> Dict[str, Any]:
+    forward = {}
+    forward["headers"] = {"content-type": request.content_type}
+    forward["data"] = request.body
+    return forward
+
+
 def proxy_zoom_response(zoom_response: Response) -> ZoomResponse:
     # pass content and status codes as-is
     response = ZoomResponse(
@@ -44,12 +45,13 @@ def proxy_zoom_response(zoom_response: Response) -> ZoomResponse:
     )
     # exclude certain headers
     for header, value in zoom_response.headers.items():
-        if header.lower() in EXCLUDED_HEADERS:
+        if header.lower() in EXCLUDED_RESPONSE_HEADERS:
             continue
         response[header] = value
     return response
 
 
+@method_decorator(csrf_exempt, name="dispatch")
 @method_decorator(auth_decorators, name="dispatch")
 class CreateMeeting(View):
     """
@@ -79,10 +81,15 @@ class CreateMeeting(View):
             application,
         )
         zoom = get_zoom_client()
-        zoom_response = zoom.create_meeting(user_id=user_id, data=request.body)
-        if zoom_response.status_code == 200:
+        proxy_request = make_proxy_request(request)
+        zoom_response = zoom.create_meeting(user_id=user_id, **proxy_request)
+        logger.info(
+            "Zoom responded with %s %s", zoom_response.status_code, zoom_response.reason
+        )
+        if zoom_response.status_code == 201:
             zoom_data = zoom_response.json()
             meeting_id = zoom_data.get("id")
+            logger.info("Saving meeting_id=%r", meeting_id)
             meeting = ZoomMeeting.objects.create(
                 user_id=user_id,
                 meeting_id=meeting_id,
@@ -93,6 +100,7 @@ class CreateMeeting(View):
         return response
 
 
+@method_decorator(csrf_exempt, name="dispatch")
 @method_decorator(auth_decorators, name="dispatch")
 class ReadUpdateDeleteMeeting(View):
     """
@@ -146,6 +154,10 @@ class ReadUpdateDeleteMeeting(View):
             "DELETE": zoom.delete_meeting,
         }
         handler = method_handlers[request.method]
-        zoom_response = handler(meeting_id=meeting_id, data=request.body)
+        proxy_request = make_proxy_request(request)
+        zoom_response = handler(meeting_id=meeting_id, **proxy_request)
+        logger.info(
+            "Zoom responded with %s %s", zoom_response.status_code, zoom_response.reason
+        )
         response = proxy_zoom_response(zoom_response)
         return response

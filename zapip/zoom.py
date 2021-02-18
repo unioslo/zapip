@@ -71,14 +71,22 @@ class ZoomClient:
     def delete(self, url: str, **kwargs):
         return self.call("DELETE", url, **kwargs)
 
-    def create_meeting(self, user_id: str, data: Any):
-        return self.post(urljoin(self.url, f"users/{user_id}/meetings"), data=data)
+    def create_meeting(self, user_id: str, data: Any, **kwargs: Any):
+        return self.post(
+            urljoin(self.url, f"v2/users/{user_id}/meetings"), data=data, **kwargs
+        )
 
-    def get_meeting(self, meeting_id: int, data: Any):
-        return self.get(urljoin(self.url, f"meetings/{meeting_id}"), data=data)
+    def get_meeting(self, meeting_id: int, data: Any, **kwargs: Any):
+        return self.get(
+            urljoin(self.url, f"v2/meetings/{meeting_id}"), data=data, **kwargs
+        )
 
-    def update_meeting(self, meeting_id: int, data: Any):
-        return self.patch(urljoin(self.url, f"meetings/{meeting_id}"), data=data)
+    def update_meeting(self, meeting_id: int, data: Any, **kwargs: Any):
+        return self.patch(
+            urljoin(self.url, f"v2/meetings/{meeting_id}"), data=data, **kwargs
+        )
 
-    def delete_meeting(self, meeting_id: int, data: Any):
-        return self.delete(urljoin(self.url, f"meetings/{meeting_id}"), data=data)
+    def delete_meeting(self, meeting_id: int, data: Any, **kwargs: Any):
+        return self.delete(
+            urljoin(self.url, f"v2/meetings/{meeting_id}"), data=data, **kwargs
+        )
