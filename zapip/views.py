@@ -31,10 +31,14 @@ EXCLUDED_RESPONSE_HEADERS = {
 
 
 def make_proxy_request(request: HttpRequest) -> Dict[str, Any]:
-    forward = {}
-    forward["headers"] = {"content-type": request.content_type}
-    forward["data"] = request.body
-    return forward
+    """
+    Fetch some data from a HttpRequest and return a dictionary suitable to be
+    passed as keyword arguments to the requests library.
+    """
+    headers = {"content-type": request.content_type}
+    data = request.body
+    params = dict(request.GET)
+    return {"headers": headers, "data": data, "params": params}
 
 
 def proxy_zoom_response(zoom_response: Response) -> ZoomResponse:

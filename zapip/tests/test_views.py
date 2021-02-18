@@ -119,3 +119,26 @@ class ReadUpdateDeleteMeetingTestCase(ZapipTestCase):
         self.assertEqual(response["x-zapip-response-from"], "zoom")
         self.assertEqual(response.json()["id"], self.meeting_id)
         self.assertEqual(response.json()["topic"], "Interesting stuff")
+
+    @requests_mock.Mocker()
+    def test_proxies_query_params(self, mock: Any):
+        self._create_meeting(mock)
+        endpoint = self.zoom_url(
+            "/v2/meetings/{}{}".format(
+                self.meeting_id, "?schedule_for_reminder=false&boo=true"
+            )
+        )
+        mock.get(
+            endpoint,
+            json={"id": self.meeting_id, "topic": "Coffee"},
+            headers={
+                "content-type": "application/json",
+            },
+        )
+        response = self.client.get(
+            "/zoom/v2/meetings/{}".format(self.meeting_id),
+            {"schedule_for_reminder": "false",
+            "boo": "true"},
+            **self.gateway_headers()
+        )
+        self.assertEqual(mock.last_request.qs, {"schedule_for_reminder": ["false"], "boo": ["true"]})
