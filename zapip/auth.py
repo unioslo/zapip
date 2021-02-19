@@ -3,6 +3,7 @@ from functools import wraps
 from typing import Any, Callable, Dict, Optional
 
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpResponse
 from django.http.request import HttpRequest
 
@@ -16,6 +17,8 @@ def valid_header_authentication(request: HttpRequest) -> bool:
     Validates that all headers defined in settings.HEADER_AUTH are present
     and equal to the expected value.
     """
+    if not hasattr(settings, "HEADER_AUTH"):
+        raise ImproperlyConfigured("HEADER_AUTH is not set")
     if settings.HEADER_AUTH is None:
         return True
     for name, value in settings.HEADER_AUTH.items():

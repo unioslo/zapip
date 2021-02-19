@@ -1,9 +1,11 @@
 import uuid
 
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpResponse
 from django.http.request import HttpRequest
 from django.test import RequestFactory, TestCase
+from django.test.utils import override_settings
 from zapip.auth import (
     gateway_headers_required,
     get_gateway_headers,
@@ -56,10 +58,13 @@ class HeaderAuthTestCase(TestCase):
             response = restricted_view(self.request)
         self.assertEqual(response.status_code, 403)
 
-    def test_disabled_if_not_configured(self):
+    def test_disabled_if_set_to_none(self):
         with self.settings(HEADER_AUTH=None):
             response = restricted_view(self.request)
         self.assertEqual(response.status_code, 200)
+
+    def test_valid_header_auth_raises_ImproperlyConfigured_if_unconfigured(self):
+        self.assertRaises(ImproperlyConfigured, restricted_view, self.request)
 
     def test_sets_headers_and_data_on_denial(self):
         with self.settings(HEADER_AUTH={"Authorization": "correct"}):
@@ -68,6 +73,7 @@ class HeaderAuthTestCase(TestCase):
         self.assertEqual(response.content, b'{"error": "unauthenticated-proxy"}')
 
 
+@override_settings(HEADER_AUTH=None)
 class GatewayHeaderTestCase(TestCase):
     def setUp(self):
         self.request: HttpRequest = RequestFactory().get("/needs-gateway-headers")

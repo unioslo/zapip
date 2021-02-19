@@ -178,8 +178,14 @@ LOGGING = {
 # For certain views, we want to validate that the request is coming from
 # a proxy or API gateway. All headers (keys) must contain the configured
 # value for the request to be let through.
-# Setting this to None disables header authentication.
-HEADER_AUTH: Optional[Dict[str, str]] = None
+
+# For easier local development: 'disable' disables header authentication.
+# HEADER_AUTH: Optional[Dict[str, str]] = None
+
+# For production: Require a header to be set.
+# HEADER_AUTH: Optional[Dict[str, str]] = {
+#     "X-Zapip-Api-Key": "fafafafa-fafa-fafa-fafa-fafafafafafa"
+# }
 
 # We expect the API gateway to add these headers to any forwarded requests.
 # "API ID" identifies the API known to the gateway.

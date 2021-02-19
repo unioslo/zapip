@@ -50,6 +50,7 @@ class ZapipTestCase(TestCase):
         return response
 
 
+@override_settings(HEADER_AUTH=None)
 class CreateMeetingTestCase(ZapipTestCase):
     def test_requires_header_auth_if_enabled(self):
         self.client.headers = {"Authorization": "correct"}
@@ -87,6 +88,7 @@ class CreateMeetingTestCase(ZapipTestCase):
         self.assertTrue(meeting.exists())
 
 
+@override_settings(HEADER_AUTH=None)
 class ReadUpdateDeleteMeetingTestCase(ZapipTestCase):
     @requests_mock.Mocker()
     def test_get_method_denies_if_meeting_id_not_associated_with_application(
@@ -137,8 +139,9 @@ class ReadUpdateDeleteMeetingTestCase(ZapipTestCase):
         )
         response = self.client.get(
             "/zoom/v2/meetings/{}".format(self.meeting_id),
-            {"schedule_for_reminder": "false",
-            "boo": "true"},
+            {"schedule_for_reminder": "false", "boo": "true"},
             **self.gateway_headers()
         )
-        self.assertEqual(mock.last_request.qs, {"schedule_for_reminder": ["false"], "boo": ["true"]})
+        self.assertEqual(
+            mock.last_request.qs, {"schedule_for_reminder": ["false"], "boo": ["true"]}
+        )
