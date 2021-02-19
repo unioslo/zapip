@@ -179,7 +179,7 @@ LOGGING = {
 # a proxy or API gateway. All headers (keys) must contain the configured
 # value for the request to be let through.
 
-# For easier local development: 'disable' disables header authentication.
+# For easier local development: None disables header authentication.
 # HEADER_AUTH: Optional[Dict[str, str]] = None
 
 # For production: Require a header to be set.
