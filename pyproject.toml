@@ -22,14 +22,17 @@ django-extensions = "*"
 psycopg2-binary = "*"
 sentry-sdk = "*"
 whitenoise = "*"
+requests = "*"
 
 [tool.poetry.dev-dependencies]
 black = "*"
+coverage = "*"
 django-stubs = "*"
 ipython = "*"
 mypy = "*"
 pylint = "*"
 pylint-django = "*"
+requests-mock = "*"
 rope = "*"
 autopep8 = "*"
 

@@ -6,7 +6,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 import os
-from typing import List, Tuple
+from typing import List, Tuple, Optional, Dict
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -128,7 +128,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # STATICFILES_DIRS = [os.path.join(BASE_DIR, "..", "zapip", "frontend", "dist")]
 
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
@@ -171,3 +171,31 @@ LOGGING = {
         "pika": {"handlers": ["console"], "level": "ERROR"},
     },
 }
+
+
+# Zapip
+
+# For certain views, we want to validate that the request is coming from
+# a proxy or API gateway. All headers (keys) must contain the configured
+# value for the request to be let through.
+
+# For easier local development: None disables header authentication.
+# HEADER_AUTH: Optional[Dict[str, str]] = None
+
+# For production: Require a header to be set.
+# HEADER_AUTH: Optional[Dict[str, str]] = {
+#     "X-Zapip-Api-Key": "fafafafa-fafa-fafa-fafa-fafafafafafa"
+# }
+
+# We expect the API gateway to add these headers to any forwarded requests.
+# "API ID" identifies the API known to the gateway.
+# "Application ID" identifies the application known to the gateway.
+# "Subscription ID" identifies an instance of an application being granted
+# access to an API. Any API keys are associated with a subscription.
+GATEWAY_API_ID_HEADER = "X-Api"
+GATEWAY_APPLICATION_ID_HEADER = "X-Api-Application"
+GATEWAY_SUBSCRIPTION_ID_HEADER = "X-Api-Subscription"
+
+# Zoom client
+ZOOM_API_BASE_URL = "https://zoom.example.com/"
+ZOOM_API_HEADERS = {"X-Gravitee-Api-Key": "foo"}
