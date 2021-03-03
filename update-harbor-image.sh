@@ -27,7 +27,7 @@ fi
 echo "Will build using $BUILDER"
 
 echo "Building $IMAGE_TAG"
-$BUILDER build --no-cache -t $IMAGE_TAG .
+$BUILDER build --format docker --no-cache -t $IMAGE_TAG .
 
 echo "Pushing $IMAGE_TAG"
 $BUILDER push $IMAGE_TAG
