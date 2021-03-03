@@ -41,6 +41,7 @@ INSTALLED_APPS += [
 ]
 
 MIDDLEWARE = [
+    "log_request_id.middleware.RequestIDMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -145,16 +146,18 @@ DJANGO_LOG_LEVEL = "INFO"
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
+    "filters": {"request_id": {"()": "log_request_id.filters.RequestIDFilter"}},
     "formatters": {
         # see full list of attributes here:
         # https://docs.python.org/3/library/logging.html#logrecord-attributes
         "verbose": {
-            "format": "%(asctime)s [%(threadName)s] [%(levelname)s] [%(name)s] %(message)s"
+            "format": "%(asctime)s [%(threadName)s] [%(levelname)s] [%(name)s] [%(request_id)s] %(message)s"
         },
     },
     "handlers": {
         "console": {
             "formatter": "verbose",
+            "filters": ["request_id"],
             "class": "logging.StreamHandler",
         },
     },
@@ -199,3 +202,7 @@ GATEWAY_SUBSCRIPTION_ID_HEADER = "X-Api-Subscription"
 # Zoom client
 ZOOM_API_BASE_URL = "https://zoom.example.com/"
 ZOOM_API_HEADERS = {"X-Gravitee-Api-Key": "foo"}
+
+# Request ID headers
+LOG_REQUEST_ID_HEADER = "HTTP_X_GRAVITEE_TRANSACTION_ID"
+REQUEST_ID_RESPONSE_HEADER = "X-Zapip-Response-For"

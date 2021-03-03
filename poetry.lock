@@ -156,6 +156,17 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
+name = "django-log-request-id"
+version = "1.6.0"
+description = "Django middleware and log filter to attach a unique ID to every log message generated as part of a request"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+django = ">=1.8"
+
+[[package]]
 name = "django-stubs"
 version = "1.7.0"
 description = "Mypy stubs for Django"
@@ -607,7 +618,7 @@ lint = []
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "41ebfd066b2f17d538d2420314baae0cccb238916f62f3011986ce145a40fdab"
+content-hash = "56cc389da47b6288005b8b2e49a4882773d6713ad0ee1d56ba104a5dc42caec9"
 
 [metadata.files]
 appdirs = [
@@ -715,6 +726,10 @@ django = [
 django-extensions = [
     {file = "django-extensions-3.1.1.tar.gz", hash = "sha256:674ad4c3b1587a884881824f40212d51829e662e52f85b012cd83d83fe1271d9"},
     {file = "django_extensions-3.1.1-py3-none-any.whl", hash = "sha256:9507f8761ee760748938fd8af766d0608fb2738cf368adfa1b2451f61c15ae35"},
+]
+django-log-request-id = [
+    {file = "django-log-request-id-1.6.0.tar.gz", hash = "sha256:0126f5da0cacc62cf834efb3cf66e4606031d911ccff048da2f88fe2c0bbcbc9"},
+    {file = "django_log_request_id-1.6.0-py3-none-any.whl", hash = "sha256:c3f7f53b1fc92f62269c247bee14d578daab000a2f7ae70b70ae288b603b5907"},
 ]
 django-stubs = [
     {file = "django-stubs-1.7.0.tar.gz", hash = "sha256:ddd190aca5b9adb4d30760d5c64f67cb3658703f5f42c3bb0c2c71ff4d752c39"},

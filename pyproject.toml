@@ -19,6 +19,7 @@ authors = [
 python = "^3.8"
 django = "*"
 django-extensions = "*"
+django-log-request-id = "*"
 psycopg2-binary = "*"
 python-json-logger = "*"
 sentry-sdk = "*"
