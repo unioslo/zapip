@@ -32,8 +32,8 @@ $BUILDER build --format docker --no-cache -t $IMAGE_TAG .
 echo "Pushing $IMAGE_TAG"
 $BUILDER push $IMAGE_TAG
 
-if [ $GIT_BRANCH = "master" ]; then
-  echo "On master branch, setting $IMAGE_TAG as $CONTAINER:latest"
+if [ $GIT_BRANCH = "main" ]; then
+  echo "On main branch, setting $IMAGE_TAG as $CONTAINER:latest"
   $BUILDER tag $IMAGE_TAG $CONTAINER:latest
   $BUILDER push $CONTAINER:latest
 fi
