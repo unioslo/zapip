@@ -1,4 +1,4 @@
-FROM harbor.uio.no/library/python:3-slim
+FROM harbor.uio.no/library/docker.io-python:3-slim
 
 LABEL no.uio.contact=bnt-int@usit.uio.no
 
