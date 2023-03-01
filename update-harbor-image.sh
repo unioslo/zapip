@@ -18,10 +18,8 @@ echo "zapipsite/settings/local.py" >> .dockerignore
 
 if command -v podman > /dev/null 2>&1; then
   BUILDER=$(command -v podman)
-elif command -v docker > /dev/null 2>&1; then
-  BUILDER=$(command -v docker)
 else
-  echo "Missing podman or docker CLI tools"
+  echo "Missing podman CLI tools"
   exit 1
 fi
 echo "Will build using $BUILDER"
