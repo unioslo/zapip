@@ -17,18 +17,18 @@ ENV PIP_DEFAULT_TIMEOUT=100 \
 
 RUN pip3 install poetry gunicorn
 
-RUN addgroup --gid 1000 zapip
-RUN adduser --system --gid 1000 --home /zapip --uid 1000 zapip
-
+RUN mkdir /zapip
 WORKDIR /zapip
 COPY pyproject.toml /zapip
 COPY poetry.lock /zapip
 RUN poetry install --no-dev --no-interaction
 
 COPY . /zapip
-RUN chown --recursive zapip:zapip /zapip
-
-USER zapip
 
 # Collect static files from django
 RUN python manage.py collectstatic --no-input
+
+# Support arbitrarily assigned UIDs by making the root group
+# the owner of our directory.
+RUN chgrp -R 0 /zapip && \
+    chmod -R g=u /zapip
